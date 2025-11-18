@@ -1,4 +1,6 @@
+#include <complex>
 #include <iostream>
+#include "external/glad/include/glad/glad.h"
 #include <GLFW/glfw3.h>
 
 int main()
@@ -19,6 +21,14 @@ int main()
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
+
+	if (!gladLoadGL()) {
+		throw std::runtime_error("can't load GLAD");
+	}
+
+	std::cout << "OpenGL: " << GLVersion.major << '.' << GLVersion.minor << std::endl;
+
+	glClearColor(1,0,0,1);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
