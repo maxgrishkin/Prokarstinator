@@ -13,7 +13,10 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(external/glfw)
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp
+        Render/ShaderProgram.cpp
+        Render/ShaderProgram.h
+        GLinclude.h)
 add_subdirectory(external/glad)
 target_link_libraries(${PROJECT_NAME} glfw ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} glad ${OPENGL_LIBRARIES})
