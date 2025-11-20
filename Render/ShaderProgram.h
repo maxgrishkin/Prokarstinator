@@ -3,7 +3,7 @@
 
 #include "../GLinclude.h"
 
-namespace Rendarer {
+namespace Renderer {
 	class ShaderProgram {
 	public:
 		ShaderProgram(std::string& vertexShader, std::string& fragmentShader);

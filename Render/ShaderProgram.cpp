@@ -1,7 +1,7 @@
 #include "ShaderProgram.h"
 #include <iostream>
 
-namespace Rendarer {
+namespace Renderer {
 	ShaderProgram::ShaderProgram(std::string& vertexShader, std::string& fragmentShader) {
 		GLuint vertexShaderID;
 		if (!CreateShader(vertexShader,GL_VERTEX_SHADER,vertexShaderID)) {
