@@ -5,12 +5,13 @@
 #include <iostream>
 #include "../Render/ShaderProgram.h"
 #include "../Resource/ResourceManager.h"
-#include "glm/vec2.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 GLfloat point[] = {
-	0.0f,0.5f,0.0f,
-	0.5f,-0.5f,0.0f,
-	-0.5f,-0.5f,0.0f
+	0.0f,50.f,0.0f,
+	50.f,-50.f,0.0f,
+	-50.f,-50.0f,0.0f
 };
 
 GLfloat colors[] = {
@@ -30,7 +31,7 @@ glm::ivec2 gl_WINDOWS_SIZE(640,480);
 void glfwWindowScaleCallback(GLFWwindow* pWindow,int width,int height) {
 	gl_WINDOWS_SIZE.x = width;
 	gl_WINDOWS_SIZE.y = height;
-	glViewport(0,0,0,height);
+	glViewport(0,0,width,height);
 }
 
 void glfwKeyCallback(GLFWwindow* pWindow,int key,int scancode,int action,int mode) {
@@ -74,12 +75,12 @@ int main(int argc,char** argv)
 	glClearColor(0,0,0,1);
 	{
 		ResourceManager resourceManager(argv[0]);
-		auto DefaultShaderProgram = resourceManager.loadShader("DefaultShader", "res/shaders/shader.vsh", "res/shaders/shader.fsh");
+		auto pDefaultShaderProgram = resourceManager.loadShader("DefaultShader", "res/shaders/shader.vsh", "res/shaders/shader.fsh");
 
 		std::string vertex_shader_code;
 		std::string fragment_shader_code;
 
-		if (!DefaultShaderProgram->isCompiled()) {
+		if (!pDefaultShaderProgram->isCompiled()) {
 			throw std::runtime_error("Can't create shader program!");
 		}
 
@@ -119,8 +120,18 @@ int main(int argc,char** argv)
 		glBindBuffer(GL_ARRAY_BUFFER,texCoord_vbo);
 		glVertexAttribPointer(2,2,GL_FLOAT,0,0,nullptr);
 
-		DefaultShaderProgram->use();
-		DefaultShaderProgram->setInt("tex",0);
+		pDefaultShaderProgram->use();
+		pDefaultShaderProgram->setInt("tex",0);
+
+		glm::mat4 modeMatrix_1 = glm::mat4(1.f);
+		modeMatrix_1 = glm::translate(modeMatrix_1,glm::vec3(100.f,50.f,0.f));
+
+		glm::mat4 modeMatrix_2 = glm::mat4(1.f);
+		modeMatrix_2 = glm::translate(modeMatrix_2,glm::vec3(590.f,50.f,0.f));
+
+		glm::mat4 projectionMatrix = glm::ortho(0.f,static_cast<float>(gl_WINDOWS_SIZE.x),0.f,static_cast<float>(gl_WINDOWS_SIZE.y),-100.f,100.f);
+
+		pDefaultShaderProgram->setMatrix4("projectionMat",projectionMatrix);
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(pwindow))
@@ -128,9 +139,14 @@ int main(int argc,char** argv)
 			/* Render here */
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			DefaultShaderProgram->use();
+			pDefaultShaderProgram->use();
 			glBindVertexArray(vao);
 			tex->bind();
+
+			pDefaultShaderProgram->setMatrix4("modelMat",modeMatrix_1);
+			glDrawArrays(GL_TRIANGLES,0,3);
+
+			pDefaultShaderProgram->setMatrix4("modelMat",modeMatrix_2);
 			glDrawArrays(GL_TRIANGLES,0,3);
 
 			/* Swap front and back buffers */
