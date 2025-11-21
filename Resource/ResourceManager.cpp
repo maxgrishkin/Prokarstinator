@@ -61,10 +61,29 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTexture(const std::str
 	stbi_image_free(pixels);
 	return newTexture;
 }
-std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::string &textureName, const std::string &texturePath) {
+std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::string &textureName) {
 	TexturesMap::const_iterator it = mTextures.find(textureName);
 	if (it == mTextures.end()) {
 		throw std::runtime_error("Can't find the texture: " + textureName + "\n");
+	}
+	return it->second;
+}
+
+std::shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const std::string &spriteName,
+	const std::string &textureName,
+	const std::string &shaderName,
+	const unsigned int spriteWidth,
+	const unsigned int spriteHeight)
+{
+	auto pTexture = getTexture(textureName);
+	auto pShader = getShader(shaderName);
+	std::shared_ptr<Renderer::Sprite> newSprite = mSprites.emplace(spriteName,std::make_shared<Renderer::Sprite>(pTexture,pShader,glm::vec2(0.f,0.f),glm::vec2(spriteWidth,spriteHeight))).first->second;
+	return newSprite;
+}
+std::shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const std::string &spriteName) {
+	SpritesMap::const_iterator it = mSprites.find(spriteName);
+	if (it == mSprites.end()) {
+		throw std::runtime_error("Can't find the texture: " + spriteName + "\n");
 	}
 	return it->second;
 }

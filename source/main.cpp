@@ -5,7 +5,7 @@
 #include <iostream>
 #include "../Render/ShaderProgram.h"
 #include "../Resource/ResourceManager.h"
-#include "glm/mat4x4.hpp"
+#include "../Render/Sprite.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 GLfloat point[] = {
@@ -76,15 +76,19 @@ int main(int argc,char** argv)
 	{
 		ResourceManager resourceManager(argv[0]);
 		auto pDefaultShaderProgram = resourceManager.loadShader("DefaultShader", "res/shaders/shader.vsh", "res/shaders/shader.fsh");
-
-		std::string vertex_shader_code;
-		std::string fragment_shader_code;
-
 		if (!pDefaultShaderProgram->isCompiled()) {
-			throw std::runtime_error("Can't create shader program!");
+			throw std::runtime_error("Can't create shader program: DefaultShader");
+		}
+
+		auto pSpriteShaderProgram = resourceManager.loadShader("SpriteShader", "res/shaders/sprite.vsh", "res/shaders/sprite.fsh");
+		if (!pSpriteShaderProgram->isCompiled()) {
+			throw std::runtime_error("Can't create shader program: SpriteShader");
 		}
 
 		auto tex = resourceManager.loadTexture("DefaultTexture","res/textures/minion.png");
+
+		auto pSprite = resourceManager.loadSprite("NewSprite","DefaultTexture","SpriteShader",390,500);
+		pSprite->setPosition(glm::vec2(150,0));
 
 		GLuint points_vbo = 0;
 		glGenBuffers(1,&points_vbo);
@@ -120,8 +124,6 @@ int main(int argc,char** argv)
 		glBindBuffer(GL_ARRAY_BUFFER,texCoord_vbo);
 		glVertexAttribPointer(2,2,GL_FLOAT,0,0,nullptr);
 
-		pDefaultShaderProgram->use();
-		pDefaultShaderProgram->setInt("tex",0);
 
 		glm::mat4 modeMatrix_1 = glm::mat4(1.f);
 		modeMatrix_1 = glm::translate(modeMatrix_1,glm::vec3(100.f,50.f,0.f));
@@ -131,7 +133,11 @@ int main(int argc,char** argv)
 
 		glm::mat4 projectionMatrix = glm::ortho(0.f,static_cast<float>(gl_WINDOWS_SIZE.x),0.f,static_cast<float>(gl_WINDOWS_SIZE.y),-100.f,100.f);
 
+		pDefaultShaderProgram->use();
 		pDefaultShaderProgram->setMatrix4("projectionMat",projectionMatrix);
+
+		pSpriteShaderProgram->use();
+		pSpriteShaderProgram->setMatrix4("projectionMat",projectionMatrix);
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(pwindow))
@@ -148,6 +154,8 @@ int main(int argc,char** argv)
 
 			pDefaultShaderProgram->setMatrix4("modelMat",modeMatrix_2);
 			glDrawArrays(GL_TRIANGLES,0,3);
+
+			pSprite->render();
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(pwindow);

@@ -21,7 +21,9 @@ add_executable(${PROJECT_NAME} source/main.cpp
         Resource/ResourceManager.h
         Resource/stb_image.h
         Render/Texture2D.cpp
-        Render/Texture2D.h)
+        Render/Texture2D.h
+        Render/Sprite.cpp
+        Render/Sprite.h)
 add_subdirectory(external/glad)
 target_link_libraries(${PROJECT_NAME} glfw ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} glad ${OPENGL_LIBRARIES})
