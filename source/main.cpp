@@ -5,6 +5,7 @@
 #include <iostream>
 #include "../Render/ShaderProgram.h"
 #include "../Resource/ResourceManager.h"
+#include "glm/vec2.hpp"
 
 GLfloat point[] = {
 	0.0f,0.5f,0.0f,
@@ -24,13 +25,12 @@ GLfloat texCoord[] {
 	0.0f,0.0f
 };
 
-int gl_WINDOWS_SIZE_X = 640;
-int gl_WINDOWS_SIZE_Y = 480;
+glm::ivec2 gl_WINDOWS_SIZE(640,480);
 
 void glfwWindowScaleCallback(GLFWwindow* pWindow,int width,int height) {
-	gl_WINDOWS_SIZE_X = width;
-	gl_WINDOWS_SIZE_Y = height;
-	glViewport(0,0,width,height);
+	gl_WINDOWS_SIZE.x = width;
+	gl_WINDOWS_SIZE.y = height;
+	glViewport(0,0,0,height);
 }
 
 void glfwKeyCallback(GLFWwindow* pWindow,int key,int scancode,int action,int mode) {
@@ -51,7 +51,7 @@ int main(int argc,char** argv)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 
-	pwindow = glfwCreateWindow(gl_WINDOWS_SIZE_X, gl_WINDOWS_SIZE_Y, "Prokarstinator", nullptr, nullptr);
+	pwindow = glfwCreateWindow(gl_WINDOWS_SIZE.x, gl_WINDOWS_SIZE.y, "Prokarstinator", nullptr, nullptr);
 	if (!pwindow)
 	{
 		glfwTerminate();
