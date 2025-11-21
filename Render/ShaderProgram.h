@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include "../GLinclude.h"
+#include "../source/GLinclude.h"
 
 namespace Renderer {
 	class ShaderProgram {
@@ -12,6 +12,7 @@ namespace Renderer {
 			return mIsCompiled;
 		}
 		void use() const;
+		void setInt(const std::string& name,const GLint value);
 
 		ShaderProgram() = delete;
 		ShaderProgram(ShaderProgram&) = delete;

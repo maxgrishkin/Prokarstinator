@@ -64,12 +64,15 @@ namespace Renderer {
 
 		return *this;
 	}
-
 	ShaderProgram::ShaderProgram(ShaderProgram &&shaderProgram) noexcept {
 		mID = shaderProgram.mID;
 		mIsCompiled = shaderProgram.mIsCompiled;
 
 		shaderProgram.mID = 0;
 		shaderProgram.mIsCompiled = false;
+	}
+
+	void ShaderProgram::setInt(const std::string &name, const GLint value) {
+		glUniform1i(glGetUniformLocation(mID,name.c_str()),value);
 	}
 }
